@@ -25,6 +25,7 @@ def detail_url(recipe_id):
     """Create and return a recipe datail URL."""
     return reverse('recipe:recipe-detail', args=[recipe_id])
 
+
 def create_recipe(user, **params):
     """Create and return a sample recipe"""
     defaults = {
@@ -39,9 +40,11 @@ def create_recipe(user, **params):
     recipe = Recipe.objects.create(user=user, **defaults)
     return recipe
 
+
 def create_user(**params):
     """Create and return a new user"""
     return get_user_model().objects.create_user(**params)
+
 
 class PublicRecipeAPITest(TestCase):
     """Test unauthenticated API request."""
@@ -61,7 +64,7 @@ class PrivateRecipeApiTests(TestCase):
 
     def setUp(self):
         self.client = APIClient()
-        self.user = create_user(email='user@example.com', password='testpass123')
+        self.user = create_user(email='user@example.com', password='test123')
         self.client.force_authenticate(self.user)
 
     def test_retriverecipes(self):
@@ -101,7 +104,7 @@ class PrivateRecipeApiTests(TestCase):
 
     def test_create_recipe(self):
         """Test create a recipe."""
-        payload ={
+        payload = {
             'title': 'Sample recipe',
             'time_minutes': 30,
             'price': Decimal('5.99'),
@@ -174,7 +177,7 @@ class PrivateRecipeApiTests(TestCase):
         """Test deliting a recipe successful."""
         recipe = create_recipe(user=self.user)
 
-        url=detail_url(recipe.id)
+        url = detail_url(recipe.id)
         res = self.client.delete(url)
 
         self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
@@ -190,4 +193,3 @@ class PrivateRecipeApiTests(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_404_NOT_FOUND)
         self.assertTrue(Recipe.objects.filter(id=recipe.id).exists())
-
