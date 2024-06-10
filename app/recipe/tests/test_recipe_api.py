@@ -1,5 +1,5 @@
 """
-Test for recipe API.
+Tests for recipe APIs.
 """
 from decimal import Decimal
 
@@ -25,7 +25,7 @@ RECIPES_URL = reverse('recipe:recipe-list')
 
 
 def detail_url(recipe_id):
-    """Create and return a recipe datail URL."""
+    """Create and return a recipe detail URL."""
     return reverse('recipe:recipe-detail', args=[recipe_id])
 
 
@@ -56,7 +56,7 @@ class PublicRecipeAPITest(TestCase):
         self.client = APIClient()
 
     def test_auth_required(self):
-        """Test auth is required."""
+        """Test auth is required to call API."""
         res = self.client.get(RECIPES_URL)
 
         self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
@@ -226,12 +226,9 @@ class PrivateRecipeApiTests(TestCase):
             'title': 'Pongal',
             'time_minutes': 60,
             'price': Decimal('4.50'),
-            'tags': ['Indian', 'Breakfast'],
+            'tags': [{'name': 'Indian'}, {'name': 'Breakfast'}],
         }
         res = self.client.post(RECIPES_URL, payload, format='json')
-        print('#################################################################')
-        print(res.status_code)
-        print('#################################################################')
 
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
         recipes = Recipe.objects.filter(user=self.user)
